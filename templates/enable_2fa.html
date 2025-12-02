@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-3">Two-Factor Authentication (2FA)</h2>
+
+{% if is_enabled %}
+    <div class="alert alert-success">
+        2FA is already <strong>enabled</strong> for your account.
+    </div>
+    <p>If you re-install your authenticator app, you will need this secret again:</p>
+{% else %}
+    <div class="alert alert-warning">
+        2FA is currently <strong>disabled</strong> for your account.
+    </div>
+    <p>To enable 2FA:</p>
+    <ol>
+        <li>Open your authenticator app (Google Authenticator, Microsoft Authenticator, etc.).</li>
+        <li>Add a new account manually.</li>
+        <li>When asked for a <strong>secret key</strong>, enter the one below.</li>
+        <li>Use <strong>Time-based</strong> (TOTP) codes.</li>
+    </ol>
+{% endif %}
+
+<div class="card my-3">
+    <div class="card-body">
+        <h5 class="card-title">Your 2FA Secret Key</h5>
+        <p class="card-text">
+            <code style="font-size: 1.2em;">{{ secret }}</code>
+        </p>
+        <p class="text-muted">
+            Keep this secret safe. Anyone with this key can generate valid codes for your account.
+        </p>
+    </div>
+</div>
+
+<h4>Verify a code</h4>
+<p>Enter the current 6-digit code from your authenticator app to confirm.</p>
+
+<form method="post" action="{{ url_for('enable_2fa') }}" class="row g-3">
+    <div class="col-auto">
+        <input type="text" name="code" class="form-control" placeholder="123456" required maxlength="6">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary mb-3">
+            Verify &amp; Enable 2FA
+        </button>
+    </div>
+</form>
+
+{% endblock %}
